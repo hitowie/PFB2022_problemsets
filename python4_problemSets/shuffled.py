@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 import random
 
-seq = 'GATGGGATTGGGGTTTTCCCCTCCCATGTGCTCAAGACTGGCGCTAAAAGTTTTGAGCTTCTCAAAAGTCTAGAGCCACCGTCCAGGGAGCAGGTAGCTGCTGGGCTCCGG'
-list = [nt for nt in seq]
+# create a shuffled sequence
+# use a `for` loop to switch two random nucleotides N times with N=len(seq)
 
-#list=[]
-#for i in string:
-#	list.append(i)
+seq = 'GATGGGATTGGGGTTTTCCCCTCCCATGTGCTCAAGACTGGCGCTAAAAGTTTTGAGCTTCTCAAAAGTCTAGAGCCACCGTCCAGGGAGCAGGTAGCTGCTGGGCTCCGG'
 
 N = len(seq)
 
-for i in list:
+for i in list(seq):
 	posA = random.randrange(N)
-	A = list[posA]
+	A = list(seq)[posA]
 	posB = random.randrange(N)
-	B = list[posB]
-	list[posA] = B
-	list[posB] = A
+	B = list(seq)[posB]
+	list(seq)[posA] = B
+	list(seq)[posB] = A
 
-print(''.join(list))
+print(''.join(list(seq)))
+
