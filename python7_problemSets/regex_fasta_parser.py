@@ -5,17 +5,24 @@ import re
 # create a FASTA parser using regular expressions
 # make sure your parser can deal with a sequence that is split over many lines
 
-pattern = r"^>(\w+)\s?(.*)"
-
-with open("Python_07.fasta", "r") as read_fasta:
-	fastaDict = {}
-	for line in read_fasta:
+pattern = r"^>(\S+)\s+(.*)"
+fastaDict = {}
+sequence = ''
+with open("Python_07.fasta", "r") as fasta_object:
+	for line in fasta_object:
 		line = line.rstrip()
-		header = re.match(pattern, line)
-		if header:
-			seqID = header.group(1)
-			fastaDict[seqID] = ''
+		matches = re.match(pattern,line)
+		if matches:
+			if sequence:	
+				fastaDict[seqID] = sequence
+				seqID = matches.group(1)
+				sequence = ''
+			else:
+				seqID = matches.group(1)
+				sequence = ''
 		else:
-			fastaDict[seqID] += line
+			sequence += line
+	fastaDict[seqID] = sequence
 
-print(fastaDict)
+for seqID in fastaDict:
+	print(seqID, fastaDict[seqID], sep='\t')
