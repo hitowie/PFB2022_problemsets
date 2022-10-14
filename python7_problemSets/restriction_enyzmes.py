@@ -4,7 +4,7 @@ import sys
 
 # fill a dictionary of enyzmes paired with their recognition patterns
 
-with open("bionet.txt","r") as enzyme_file:
+with open("rebase.txt","r") as enzyme_file:
 	enzyme_dict = {}
 	lines_after_header = enzyme_file.readlines()[10:]	# skip the top 10 header lines of the file
 	pattern = r"^(\S+\s\S*)\W+(\S+)"
