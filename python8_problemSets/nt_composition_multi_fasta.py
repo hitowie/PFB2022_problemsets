@@ -32,11 +32,11 @@ with open(fasta_input, "r") as fasta_object:
 # add nt composition to fasta_dict
 for seq_record in fasta_dict:
 	nt_comp = {}
-	for nt_seq in fasta_dict[seq_record]['sequence']:
-		unique_nt = set(nt_seq)
-		for nt in unique_nt:
-			count = nt_seq.count(nt)
-			nt_comp[nt] = count
+	nt_seq = fasta_dict[seq_record]['sequence']
+	unique_nt = set(nt_seq)
+	for nt in unique_nt:
+		count = nt_seq.count(nt)
+		nt_comp[nt] = count
 	fasta_dict[seq_record]['nt_composition'] = nt_comp
 	print(seq_record, fasta_dict[seq_record]['nt_composition'])
 #print(fasta_dict)
