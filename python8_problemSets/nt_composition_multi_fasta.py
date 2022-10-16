@@ -2,20 +2,15 @@
 import sys
 import re
 
-# take a multi FASTA file from user input and calculate nucleotide composition for each sequence
-# use a datastructure to keep count
-# print out each sequence name and its composition
-
-file_input = sys.argv[1]
+# parse fasta
+fasta_input = sys.argv[1]
+#fasta_input = 'Python_07.fasta'
 
 pattern = r"^>(\S+)\s+(.*)"
 fasta_dict = {}
-seqID = ''
-seq_descr = ''
 sequence = ''
-count = ''
 
-with open(file_input, "r") as fasta_object:
+with open(fasta_input, "r") as fasta_object:
 	for line in fasta_object:
 		line = line.rstrip()
 		match = re.match(pattern, line)
@@ -28,17 +23,20 @@ with open(file_input, "r") as fasta_object:
 			else:
 				seqID = match.group(1)
 				seq_descr = match.group(2)
-				sequence = ''
+				sequence = ''			
 		else:
 			sequence += line
 	fasta_dict[seqID] = {'sequence' : sequence, 'description' : seq_descr}
 #print(fasta_dict)
 
-for identifier in fasta_dict:
-	nt_seq = fasta_dict[identifier]['sequence']
-	countA = nt_seq.count('A')
-	countC = nt_seq.count('C')
-	countG = nt_seq.count('G')
-	countT = nt_seq.count('T')
-	fasta_dict[identifier]['nt_count'] = {'nt_count' : {'A' : countA, 'C' : countC, 'G' : countG, 'T' : countT}}
-	print(identifier, fasta_dict[identifier]['nt_count'])
+# add nt composition to fasta_dict
+for seq_record in fasta_dict:
+	nt_comp = {}
+	for nt_seq in fasta_dict[seq_record]['sequence']:
+		unique_nt = set(nt_seq)
+		for nt in unique_nt:
+			count = nt_seq.count(nt)
+			nt_comp[nt] = count
+	fasta_dict[seq_record]['nt_composition'] = nt_comp
+	print(seq_record, fasta_dict[seq_record]['nt_composition'])
+#print(fasta_dict)
