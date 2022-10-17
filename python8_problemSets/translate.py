@@ -50,7 +50,7 @@ with open ("Python_08.codons-frame-1.nt", "w") as codons_frame1:
 			split_seq += nt_seq[codon:codon+3] + ' '
 #		print(f"{seq_record}-frame-1-codons\n{split_seq}\n")
 		codons_frame1.write(f"{seq_record}-frame-1-codons\n{split_seq}\n")
-#print("written file 'Python_08.codons-frame-1.nt'")	
+print("written file 'Python_08.codons-frame-1.nt'")	
 
 # adding all three reading frames to fasta_dict
 with open ("Python_08.codons-3frames.nt", "w") as codons_frame3:
@@ -66,7 +66,7 @@ with open ("Python_08.codons-3frames.nt", "w") as codons_frame3:
 #			print(nt_seq.count('A'), '\t', split_seq.count('A'))
 #			print(f"{seq_record}-frame-{start+1}-codons\n{split_seq}\n")
 			codons_frame3.write(f"{seq_record}-frame-{start+1}-codons\n{split_seq}\n")
-#print("written file 'Python_08.codons-3frames.nt'")  
+print("written file 'Python_08.codons-3frames.nt'")  
 
 # adding all three reading frames plus three reading frames of the reverse complement
 with open ("Python_08.codons-6frames.nt", "w") as codons_frame6:
@@ -95,10 +95,10 @@ with open ("Python_08.codons-6frames.nt", "w") as codons_frame6:
 			reading_frame['rf_forward'][frame] = {'orf' : split_seq, 'translation' : aa_seq}
 			reading_frame['rf_reverse'][frame] = {'orf' : rev_split_seq, 'translation' : aa_seq}
 #			print('forward:', nt_seq.count('A'), '\t', split_seq.count('A'), '\t', 'reverse:', SEQ_reverse_complement.count('A'), '\t', rev_split_seq.count('A') )
+			codons_frame6.write(f"{seq_record}-{frame}-forward-codons\n{split_seq}\n{seq_record}-{frame}-reverse-codons\n{rev_split_seq}\n")
 		fasta_dict[seq_record]['reading_frame'] = reading_frame
 #	print(fasta_dict)
-#		codons_frame6.write(f"{seq_record}-{fasta_dict[seq_record][reading_frame][frame]\n{split_seq}\n{seq_record}-frame-{start+1}-reverse-codons\n{rev_split_seq}\n")
-#print("written file 'Python_08.codons-6frames.nt'")
+print("written file 'Python_08.codons-6frames.nt'")
 
 # translate each of the six reading frames into amino acids
 translation_table = {
@@ -134,27 +134,48 @@ with open("Python_08.translated.aa", "w") as peptide_file:
 			for codon in codons:
 				translation_list.append(translation_table[codon])
 			aa_seq = ''.join(translation_list)
-		fasta_dict[seq_record]['reading_frame']['rf_forward'][frame]['translation'] = aa_seq
+			translation_list = []
+			fasta_dict[seq_record]['reading_frame']['rf_forward'][frame]['translation'] = aa_seq
 #		print(fasta_dict[seq_record]['reading_frame']['rf_forward'][frame]['translation'])
+			peptide_file.write(f"{seq_record}-{frame}-forward-strand\n{aa_seq}\n")
 		for frame in fasta_dict[seq_record]['reading_frame']['rf_reverse']:
-#			translation_list = []
 			codons = re.findall(r"\w{3}", fasta_dict[seq_record]['reading_frame']['rf_reverse'][frame]['orf'])
 			for codon in codons:
 				translation_list.append(translation_table[codon])			
 			aa_seq = ''.join(translation_list)
-		fasta_dict[seq_record]['reading_frame']['rf_reverse'][frame]['translation'] = aa_seq
+			translation_list = []
+			fasta_dict[seq_record]['reading_frame']['rf_reverse'][frame]['translation'] = aa_seq
 #	print(fasta_dict[seq_record]['reading_frame'])
 #		print(f"""{seq_record}-forward-strand-frame1-aa_seq\n
 #{fasta_dict[seq_record]['reading_frame']['rf_forward'][frame]['translation']}\n
 #""")
-#	peptide_file.write(f"{seq_record}-{frame}-forward-codons\n{split_seq}\n{seq_record}-frame-    {start+1}-reverse-codons\n{rev_split_seq}\n")
-#print("written file 'Python_08.translated.aa'")
+			peptide_file.write(f"{seq_record}-{frame}-reverse-strand\n{aa_seq}\n")
+print("written file 'Python_08.translated.aa'")
+#print(fasta_dict)
 
 with open("Python_08.translated-longest.aa", "w") as orf_file:
 	for seq_record in fasta_dict:
-		for aa_string in fasta_dict[seq_record]['reading_frame']['rf_forward'][frame]['translation']:
-			find_peptide = re.search(r"(M\w+\*)", aa_string)
-			peptide = find_peptide.group(1)	# AttributeError: 'NoneType' object has no attribute 'group'
-		print(peptide)
-#		orf_file.write(f"print the single longest translated peptide")
-#print("written file 'Python_08.translated-longest.aa'")
+		longest_peptide = ''
+		longest_length = 0
+		for frame in fasta_dict[seq_record]['reading_frame']['rf_forward']:
+			aa_string = fasta_dict[seq_record]['reading_frame']['rf_forward'][frame]['translation']
+#			print(aa_string)
+			find_peptide = re.findall(r"M\w+\*", aa_string)
+			for peptide in find_peptide:
+				if len(peptide) > longest_length:
+					longest_length = len(peptide) 	# AttributeError: 'NoneType' object has no attribute 'group'
+					longest_peptide = peptide
+#				print("forward", frame, peptide)
+		for frame in fasta_dict[seq_record]['reading_frame']['rf_reverse']:
+			aa_string = fasta_dict[seq_record]['reading_frame']['rf_reverse'][frame]['translation']
+#			print(aa_string)
+			find_peptide = re.findall(r"M\w+\*", aa_string)
+			for peptide in find_peptide:
+				if len(peptide) > longest_length:
+					longest_length = len(peptide) 	# AttributeError: 'NoneType' object has no attribute 'group'
+					longest_peptide = peptide
+#				print("reverse", frame, peptide)
+#		print(longest_peptide)
+#		print(f"{seq_record}\n{longest_peptide}")
+		orf_file.write(f"{seq_record}\n{longest_peptide}\n")
+print("written file 'Python_08.translated-longest.aa'")
