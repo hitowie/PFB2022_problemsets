@@ -1,0 +1,114 @@
+# CSH 10-15-2022
+# CSHL Programming for Biology
+# Unix Problem Set I
+# ============================
+
+# move to /bin directory and list files
+% cd /bin/
+% ls
+
+# What's the difference between these two commands?
+% ls -l			# flag -l ling list
+% ls -lt		# flag `-t` sorts files by time modified
+
+% man ls 		# let's you check the manual
+
+# string multiple commands together with a pipe `|`
+# STDOUT of first command is piped into STDIN of second command
+% ls -lt | head
+
+# string multiple commands together by `;` to run sequentially
+# STDOUT is not passed on to next command
+% date ; sleep ; date
+
+% man sleep		# suspend execution for an interval of time
+
+# use `wget` or `curl -O` to download file 'cuffdiff.txt'
+% wget https://raw.githubusercontent.com/prog4biol/pfb2022/master/files/cuffdiff.txt
+
+# redirect STDOUT of command line into a file
+% grep Chr7 cuffdiff.txt > fav_chr_cuffdiff.txt
+
+# make sure to read and check the new file
+% cat fav_chr_cuffdiff.txt		# read new file
+% head fav_chr_cuffdiff.txt		# read first 10 lines of new file
+% tail -2 fav_chr_cuffdiff.txt		# read last 2 lines of new file
+
+# append STDOUT of command line to the end of file
+% grep Chr9 cuffdiff.txt >> fav_chr_cuffdiff.txt
+# make sure to read and check the edited file
+
+# redirect STDERR to a file
+% cat blablabla.txt
+cat: blablabla.txt: No such file or directory
+% cat blablabla.txt 2> errors.txt
+
+# what happens when you try to redirect STDOUT?
+% cat blablabla.txt > errors.txt
+# STDERR is returned to the screen
+# no STDOUT, file is empty
+
+# redirect both STDOUT and STDERR to two separate files in one command
+% cat fav_chr_cuffdiff.txt blablabla.txt 1> out.txt 2> err.txt
+# this gives the same results
+% cat fav_chr_cuffdiff.txt blablabla.txt > out.txt 2> err.txt
+# both `>` and `1>` redirect STDOUT
+
+# redirect both STDOUT and STDERR to the same file
+% cat fav_chr_cuffdiff.txt blablabla.txt &> all_out_err.txt
+
+# 2. what's the full path to your home directory?
+% pwd
+/Users/cheil
+
+# 3. move up one directory
+% cd ..
+% pwd
+/Users
+# how many files does it contain? how many directories?
+0 files	4 directories
+
+# 4. make a directory called 'problemsets' in your home directory
+% cd ~
+% mkdir problemsets
+
+# 5. navigate into this new directory called problemsets
+% cd problemsets/
+# verify you're in the correct directory
+% pwd
+
+# 6. download the file 'sequences.nt.fa' into your problemsets directory
+% wget https://raw.githubusercontent.com/prog4biol/pfb2022/master/files/sequences.nt.fa
+
+# 7. without using a text editor, use unix commands to find the following qualities for the file 'sequences.nt.fa'
+# 7.a how many lines does the file contain?
+% wc -l sequences.nt.fa 
+148 lines
+# 7.b how many characters?
+% wc -m sequences.nt.f
+10267 characters
+# 7.c what's the first line of the file?
+% head -1 sequences.nt.f
+>NM_001126114.2 Homo sapiens tumor protein p53 (TP53), transcript variant 3, mRNA
+# 7.d what are the last three lines?
+TTTATAGCTGTTGGAAGGACTAGGTCTTCCCTAGCCCCCCCAGTGTGCAAGGGCAGTGAAGACTTGATTG
+TACAAAATACGTTTTGTAAATGTTGTGCTGTTAACACTGCAAATAAACTTGGTAGCAAACACTTCCAAAA
+AAAAAAAAAAAAAA
+# 7.e how many sequences are in the file?
+% grep '>' sequences.nt.fa | wc -l		# search for '>' in file and pipe STDOUT `wc -l` to count lines
+2 sequences
+
+# 8. rename sequences.nt.fa to cancer_genes.fasta
+% mv sequences.nt.fa cancer_genes.fasta
+
+# 10. perform the following on file 'cuffdiff.txt'
+# 10.a look at the first few lines of the file
+% head cuffdiff.txt
+# 10.b sort the file by log fold change 'log2(fold_change)' from highest to lowest and save STDOUT to a new file 'sorted.cuffdiff.out'
+% sort cuffdiff.txt -k10 -r -g > sorted.cuffdiff.out
+# 10.c sort the file by log fold change, save only the first 100 lines to a new file
+% sort cuffdiff.txt -k10 -r -g | head -100 > top100.sorted.cuffdiff.out 
+# 10.d create a list of the top 100 genes with the largest change in expression:
+# sort the file by log fold change, take the top 100, and print only the first column, sort by gene name and remove duplicates
+% sort cuffdiff.txt -k 10 -g -r | head -100 | cut -f 1 | sort | uniq > differentially.expressed.genes.txt
+

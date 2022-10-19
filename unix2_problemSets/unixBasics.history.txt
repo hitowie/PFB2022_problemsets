@@ -1,0 +1,11 @@
+  206  rm oops2
+  208  git add oops2
+  209  git status
+  210  git commit -m 'removing oops2'
+  211  git push
+  212  vi never
+  214  touch never
+  216  git add never
+  217  git reset never
+  219  man rm
+  220  man cp
