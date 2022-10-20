@@ -1,0 +1,37 @@
+# index the genome
+% bwa index Ecoli.fasta
+% samtools faidx Ecoli.fasta
+% samtools dict Ecoli.fasta > Ecoli.dict
+
+# run fastqc
+% fastqc --extract SRR21901339.fastqc
+
+# view the fastqc results in Safari (Mac only)
+% open -a Safari.app SRR21901339_fastqc.html
+
+# align the trimmed reads to the genome
+% bwa mem -R '@RG\tID:SRR21901339\tSM:Ecoli\tPL:ILLUMINA' Ecoli.fasta trimmed_SRR21901339.fastq | samtools view -b > SRR21901339.bam
+
+# sort the read alignments by genome coordinate
+% samtools sort -m 1g -o SRR21901339.srt.bam SRR21901339.bam
+
+# index the bam file for fast search (creates SRR21901339.bam.bai)
+% samtools index SRR21901339.srt.bam
+
+# run samtools stats
+% samtools stats SRR21901339.srt.bam > SRR21901339.srt.bamstats.out
+
+# run plot-bamstats
+% plot-bamstats -p ./plot/ SRR21901339.srt.bamstats.out
+# ran into an error
+
+# filter your BAM file with samtools view 
+% samtools view -o SRR21901339.filtered.bam -b -G UNMAP,MUNMAP,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY SRR21901339.srt.bam 
+
+# index the bam file
+% samtools index SRR21901339.filtered.bam
+
+# calculate the per-site read depth across the genome with samtools depth
+% samtools depth SRR21901339.filtered.bam > SRR21901339.read_depth.out
+
+
