@@ -8,7 +8,7 @@
 % ls
 
 # What's the difference between these two commands?
-% ls -l			# flag -l ling list
+% ls -l			# flag -l long list
 % ls -lt		# flag `-t` sorts files by time modified
 
 % man ls 		# let's you check the manual
